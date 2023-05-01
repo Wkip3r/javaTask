@@ -8,10 +8,11 @@ import org.springframework.stereotype.Component;
 @Component("languageDetectionBean")
 public class LanguageDetectionImpl implements LanguageDetection{
 
+    private final LanguageDetector languageDetector = LanguageDetectorBuilder.fromAllLanguages().build();
+
     @Override
     public String detectLanguage(String row) {
-        LanguageDetector languageDetector = LanguageDetectorBuilder.fromAllLanguages().build();
-        Language detectedLanguage = languageDetector.detectLanguageOf(row);
+        Language detectedLanguage = this.languageDetector.detectLanguageOf(row);
 
         return detectedLanguage.toString();
     }
