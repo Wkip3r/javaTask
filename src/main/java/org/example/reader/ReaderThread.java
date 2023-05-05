@@ -43,7 +43,7 @@ public class ReaderThread implements Runnable {
                         String language = api.getRowLanguage(buffer);
                         String result = ++this.rowCount + ": " + language + ": " + buffer;
                         blockingQueue.put(result);
-                    } catch (HttpStatusCodeException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         break;
                     }
