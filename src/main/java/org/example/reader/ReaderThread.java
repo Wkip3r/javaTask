@@ -4,6 +4,7 @@ import org.example.api.LanguageApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -38,9 +39,14 @@ public class ReaderThread implements Runnable {
 
             while ((buffer = br.readLine()) != null) {
                 if (!buffer.isEmpty() && !buffer.isBlank()) {
-                    String language = api.getRowLanguage(buffer);
-                    String result = ++this.rowCount + ": " + language + ": " + buffer;
-                    blockingQueue.put(result);
+                    try {
+                        String language = api.getRowLanguage(buffer);
+                        String result = ++this.rowCount + ": " + language + ": " + buffer;
+                        blockingQueue.put(result);
+                    } catch (HttpStatusCodeException e) {
+                        e.printStackTrace();
+                        break;
+                    }
                 }
             }
             blockingQueue.put("EOF");

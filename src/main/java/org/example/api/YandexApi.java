@@ -5,6 +5,7 @@ import org.example.entity.DetectLanguageResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 @Component
@@ -19,20 +20,21 @@ public class YandexApi extends LanguageApi {
     @Value("${yandex.folderId}")
     private String folderId;
 
-    public String getRowLanguage(String text) {
-        RestTemplate restTemplate = new RestTemplate();
+    public String getRowLanguage(String text) throws HttpStatusCodeException {
+            RestTemplate restTemplate = new RestTemplate();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(apiKey);
 
-        HttpEntity<DetectLanguageRequest> request = new HttpEntity<>(new DetectLanguageRequest(text,null,folderId),headers);
+            HttpEntity<DetectLanguageRequest> request = new HttpEntity<>(new DetectLanguageRequest(text,null,folderId),headers);
 
-        ResponseEntity<DetectLanguageResponse> response = restTemplate
-                .exchange(url, HttpMethod.POST, request, DetectLanguageResponse.class);
+            ResponseEntity<DetectLanguageResponse> response = restTemplate
+                    .exchange(url, HttpMethod.POST, request, DetectLanguageResponse.class);
 
-        DetectLanguageResponse detectLanguageResponse = response.getBody();
 
-        return detectLanguageResponse.getLanguageCode();
+            DetectLanguageResponse detectLanguageResponse = response.getBody();
+
+            return detectLanguageResponse.getLanguageCode();
     }
 }
